@@ -17,18 +17,22 @@ class SiteController {
         // Procesar formulario si es la sección contacto y viene por POST
         if ($url === 'contacto' && $_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nombre'])) {
             $nombre_contacto = trim($_POST['nombre']);
+            $correo = trim($_POST['correo'] ?? '');
+            $comentario = trim($_POST['comentario'] ?? '');
 
-            if (!empty($nombre_contacto)) {
+            if (empty($nombre_contacto) || empty($comentario)) {
+                $mensaje_db = "<p class='mensaje-error'>Por favor, completa todos los campos.</p>";
+            } elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+                $mensaje_db = "<p class='mensaje-error'>Por favor, escribe un correo válido.</p>";
+            } else {
                 $modelo = new ContactoModel($this->conexion);
-                $exito = $modelo->guardarContacto($nombre_contacto);
+                $exito = $modelo->guardarContacto($nombre_contacto, $correo, $comentario);
 
                 if ($exito) {
-                    $mensaje_db = "<p style='color: green; font-weight: bold;'>¡Mensaje guardado con éxito en la Base de Datos!</p>";
+                    $mensaje_db = "<p class='mensaje-exito'>¡Mensaje guardado con éxito en la Base de Datos!</p>";
                 } else {
-                    $mensaje_db = "<p style='color: red;'>Error al guardar en la base de datos.</p>";
+                    $mensaje_db = "<p class='mensaje-error'>Error al guardar en la base de datos.</p>";
                 }
-            } else {
-                $mensaje_db = "<p style='color: red;'>Por favor, escribe un nombre válido.</p>";
             }
         }
 
@@ -41,6 +45,9 @@ class SiteController {
                 break;
             case 'servicios':
                 require_once 'views/servicios.php';
+                break;
+            case 'gustos':
+                require_once 'views/gustos.php';
                 break;
             case 'contacto':
                 require_once 'views/contacto.php';
