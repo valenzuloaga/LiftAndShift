@@ -6,8 +6,8 @@
         <h3> Música</h3>
         <ul>
             <li>Pop latino</li>
-            <li>Rock en español</li>
-            <li>Música electrónica</li>
+            <li>Reggaeton</li>
+            <li>Música Romántica</li>
         </ul>
     </div>
 
